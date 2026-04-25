@@ -11,7 +11,7 @@ claude plugin marketplace add davidx/ai
 ## Install the plugin
 
 ```
-claude plugin install pipeline@davidx-claude
+claude plugin install pipeline@davidx
 ```
 
 ## The starway skill
