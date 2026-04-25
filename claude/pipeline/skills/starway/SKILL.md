@@ -1,6 +1,6 @@
 ---
 name: starway
-description: Structured plan-then-execute workflow. Use when the user asks to build a feature, implement a task, or says "run starway". Enforces sequential steps (requirements → features → pseudocode → failing tests → minimal code → coverage → refactor → real providers → runnable script) with per-step documentation in pipeline/.
+description: Structured plan-then-execute workflow. Use when the user asks to build a feature, implement a task, says "run starway", or says "validate/check this starway" (read-only audit mode). Enforces sequential steps (requirements → features → pseudocode → failing tests → minimal code → coverage → refactor → real providers → runnable script) with per-step documentation in pipeline/.
 ---
 
 # starway
@@ -63,23 +63,16 @@ A `Makefile` is **always** in this list. It must define:
 
 Targets should call into the project's normal tooling (e.g. `.venv/bin/pytest`, `python -m <pkg>`), not duplicate logic.
 
-#### `make check` — pipeline self-audit
+#### `make check` — pipeline self-audit (claude does it)
 
-A small Python script (e.g. `scripts/check_pipeline.py`) invoked by `make check`. It walks `pipeline/` and `features/` and reports any drift between what the pipeline says and what the repo actually contains. Fail (exit 1) on any mismatch; print a checklist of what's missing.
+Do **not** write a Python validator. `make check` just shells out to claude and asks it to audit the pipeline:
 
-It should verify:
-1. `pipeline/01-requirements.md` through `pipeline/10-script.md` all exist.
-2. Every requirement bullet in `01-requirements.md` is reflected by at least one `features/*.yaml`.
-3. Every `features/*.yaml` has `intent`, `outcome`, and `validation` fields.
-4. Every feature is referenced in `02-features.md`.
-5. `03-pseudocode.md` mentions every feature by name.
-6. Every file listed in `04-file-plan.md` exists on disk (or is explicitly marked deleted).
-7. `05-tests.md` references real test files that exist and contain at least one test per feature.
-8. `Makefile` defines `test`, `coverage`, `start`, `check` (and `stop` if applicable). 
-9. `09-providers.md` lists no remaining stubs left in source (grep for `return 1  # stub`-style markers).
-10. `10-script.md` points to a script path that exists and is executable.
+```makefile
+check:
+	@claude -p "validate this starway"
+```
 
-Use this when work is done outside the pipeline (manual edits, copy-paste, partial runs) — `make check` surfaces drift so the next step is "go back and fix step N."
+The starway skill (this file) handles the rest — see "Validation mode" below.
 
 ### 5. Failing tests
 Write unit tests that exercise the expected outcome per feature, in the most isolated way. Prefer real objects over mocks (user preference); mock only when necessary. Run the tests — they must fail (code does not exist). Write `pipeline/05-tests.md` summarizing test files and what each asserts.
@@ -104,3 +97,24 @@ Write the simplest possible script that uses the code and prints real output —
 Before writing any code in a given step, check `pipeline/` for the previous step's file. If missing, go back and complete that step first. This is non-negotiable — the directory itself is the overseer.
 
 When the user says "continue pipeline" or interrupts and resumes, read `pipeline/` to determine the next step.
+
+## Validation mode
+
+Trigger phrases: "validate this starway", "check this starway", "audit the pipeline", or `make check` (which runs `claude -p "validate this starway"`).
+
+In this mode you **do not modify anything**. You read, you report. The user decides whether to fix.
+
+Walk the repo and check:
+
+1. All ten `pipeline/0N-*.md` files exist.
+2. Every requirement bullet in `01-requirements.md` maps to at least one `features/*.yaml`.
+3. Every `features/*.yaml` has `intent`, `outcome`, and `validation` fields.
+4. Every feature yaml is referenced in `02-features.md`.
+5. `03-pseudocode.md` covers every feature by name.
+6. Every path in `04-file-plan.md` exists on disk (or is annotated as deleted/skipped).
+7. Test files referenced in `05-tests.md` exist and cover each feature.
+8. `Makefile` defines `test`, `coverage`, `start`, `check`, and `stop` if `start` is long-running.
+9. No stub markers left in source (grep for `# stub`, `TODO: real impl`, `return 1  # placeholder`, etc.) given that step 9 claims providers are real.
+10. The runnable script in `10-script.md` exists and is executable.
+
+Output: a per-step checklist (✓ / ✗ with one line of evidence each) and at the end a punch list of what's missing or out of sync. Do not edit files. End with: "run starway from step N to fix" if anything failed, or "pipeline is in sync" if all green.
