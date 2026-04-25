@@ -1,0 +1,20 @@
+{
+  "name": "davidx-claude",
+  "owner": {
+    "name": "davidx",
+    "email": "davidx@gmail.com"
+  },
+  "metadata": {
+    "description": "davidx's Claude Code marketplace — plugins, skills, and workflows.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "pipeline",
+      "source": "./pipeline",
+      "description": "Structured plan-then-execute workflow with per-step documentation in pipeline/.",
+      "version": "1.0.0",
+      "category": "workflow"
+    }
+  ]
+}

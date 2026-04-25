@@ -1,0 +1,5 @@
+{
+  "name": "pipeline",
+  "version": "1.0.0",
+  "description": "Structured plan-then-execute workflow: requirements → features → pseudocode → failing tests → minimal code → coverage → refactor → real providers → runnable script."
+}
