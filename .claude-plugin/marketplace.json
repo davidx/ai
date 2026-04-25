@@ -11,7 +11,7 @@
   "plugins": [
     {
       "name": "pipeline",
-      "source": "./pipeline",
+      "source": "./claude/pipeline",
       "description": "Structured plan-then-execute workflow with per-step documentation in pipeline/.",
       "version": "1.0.0",
       "category": "workflow"
