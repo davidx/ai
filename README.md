@@ -16,8 +16,31 @@ claude plugin install pipeline@davidx
 
 ## The starway skill
 
-Once installed, just talk to Claude normally. To kick off a structured build, say something like:
+Just talk to Claude normally. To kick off a structured build:
 
 > starway this new app: a flask app that tracks my reading list
 
-Claude will walk through requirements → features → pseudocode → failing tests → minimal code → coverage → refactor → real providers → runnable script, dropping a file per step into `pipeline/`.
+Claude walks the pipeline top-to-bottom, writing one file per step into `pipeline/`:
+
+```
+  1. requirements      ── pipeline/01-requirements.md
+  2. features          ── pipeline/02-features.md  +  features/*.yaml
+  3. pseudocode        ── pipeline/03-pseudocode.md
+  4. file plan         ── pipeline/04-file-plan.md
+  5. failing tests     ── pipeline/05-tests.md
+  6. minimal code      ── pipeline/06-implementation.md
+  7. coverage (100%)   ── pipeline/07-coverage.md
+  8. refactor          ── pipeline/08-refactor.md
+  9. real providers    ── pipeline/09-providers.md
+ 10. runnable script   ── pipeline/10-script.md
+```
+
+Every project also gets a `Makefile` with `test`, `coverage`, `start`, `stop` (if relevant), and `check`.
+
+To audit drift after manual edits:
+
+```
+make check
+```
+
+…or just say "validate this starway" — read-only audit, reports what's out of sync without touching anything.
