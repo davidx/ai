@@ -16,6 +16,7 @@ A disciplined build workflow. The aim is to stop jumping straight to code, and i
 - Before starting step N, confirm step N-1's file exists in `pipeline/`. If not, go back.
 - At the end of each step, state: "step N complete — on to step N+1" so progress is explicit.
 - YAML is for expressing intent + validation criteria, not for encoding logic. If you find yourself inventing a DSL in YAML, stop — write code instead.
+- **From step 7 onward, every step ends with `make test && make coverage`.** Tests must stay green and coverage must stay where step 8 left it. Paste the tail of the output into that step's `pipeline/` file as evidence. If either fails, fix before moving on — do not advance with a red bar.
 
 ## Directory layout
 
@@ -50,10 +51,10 @@ Create top-level `features/` directory. For each distinct feature, write `featur
 Do **not** encode logic, branches, or configuration trees. If a feature needs a conditional, that belongs in code. Write `pipeline/02-features.md` listing the yaml files.
 
 ### 3. Pseudocode
-Language-agnostic description of the implementation. Methods, inputs, outputs, flow. Write `pipeline/03-pseudocode.md`.
+A freeform logical description of how the thing works — the flow, the data, the decisions, enough to implement from. Not constrained to functions/classes/methods or any particular programming language or paradigm. The agent picks the form (prose, indented flow, branching outline, whatever conveys the logic clearly). The test of "is this enough?" is: could a competent engineer turn this into code without asking follow-up questions? Write `pipeline/03-pseudocode.md`.
 
 ### 4. Pseudotests
-Before writing any test code, describe **what each test will assert** in plain English. One bullet per test, grouped by feature. Each bullet should make the success/failure criterion unambiguous (the input, the call, the expected observable outcome). Write `pipeline/04-pseudotests.md`. This is the bridge between "intent" (features) and "code" (failing tests) — getting it right here means step 6 is mechanical.
+Same spirit as step 3, applied to the tests. A freeform description of what's being tested: the setup state, the action taken, and the observable result that proves it worked. No prescribed shape — `given/when/then`, narrative paragraphs, or whatever fits. The point is that step 6 becomes a translation, not a design exercise. Write `pipeline/04-pseudotests.md`.
 
 ### 5. File plan
 List the files to be created or modified with a one-line purpose each. Write `pipeline/05-file-plan.md`.
