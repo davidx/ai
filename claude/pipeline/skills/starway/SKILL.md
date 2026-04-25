@@ -54,6 +54,14 @@ Language-agnostic description of the functionality. Methods, inputs, outputs, fl
 ### 4. File plan
 List the files to be created or modified with a one-line purpose each. Write `pipeline/04-file-plan.md`.
 
+A `Makefile` is **always** in this list. It must define:
+- `make test` — run the full test suite
+- `make coverage` — run tests with coverage (100% expected at step 7)
+- `make start` — run the app (long-running services) or the primary entrypoint script (CLIs / one-shots)
+- `make stop` — stop the app, only if `make start` launches a long-running process. Omit for pure CLIs.
+
+Targets should call into the project's normal tooling (e.g. `.venv/bin/pytest`, `python -m <pkg>`), not duplicate logic.
+
 ### 5. Failing tests
 Write unit tests that exercise the expected outcome per feature, in the most isolated way. Prefer real objects over mocks (user preference); mock only when necessary. Run the tests — they must fail (code does not exist). Write `pipeline/05-tests.md` summarizing test files and what each asserts.
 
