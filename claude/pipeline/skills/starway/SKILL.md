@@ -59,8 +59,27 @@ A `Makefile` is **always** in this list. It must define:
 - `make coverage` — run tests with coverage (100% expected at step 7)
 - `make start` — run the app (long-running services) or the primary entrypoint script (CLIs / one-shots)
 - `make stop` — stop the app, only if `make start` launches a long-running process. Omit for pure CLIs.
+- `make check` — validate the pipeline itself (see below).
 
 Targets should call into the project's normal tooling (e.g. `.venv/bin/pytest`, `python -m <pkg>`), not duplicate logic.
+
+#### `make check` — pipeline self-audit
+
+A small Python script (e.g. `scripts/check_pipeline.py`) invoked by `make check`. It walks `pipeline/` and `features/` and reports any drift between what the pipeline says and what the repo actually contains. Fail (exit 1) on any mismatch; print a checklist of what's missing.
+
+It should verify:
+1. `pipeline/01-requirements.md` through `pipeline/10-script.md` all exist.
+2. Every requirement bullet in `01-requirements.md` is reflected by at least one `features/*.yaml`.
+3. Every `features/*.yaml` has `intent`, `outcome`, and `validation` fields.
+4. Every feature is referenced in `02-features.md`.
+5. `03-pseudocode.md` mentions every feature by name.
+6. Every file listed in `04-file-plan.md` exists on disk (or is explicitly marked deleted).
+7. `05-tests.md` references real test files that exist and contain at least one test per feature.
+8. `Makefile` defines `test`, `coverage`, `start`, `check` (and `stop` if applicable). 
+9. `09-providers.md` lists no remaining stubs left in source (grep for `return 1  # stub`-style markers).
+10. `10-script.md` points to a script path that exists and is executable.
+
+Use this when work is done outside the pipeline (manual edits, copy-paste, partial runs) — `make check` surfaces drift so the next step is "go back and fix step N."
 
 ### 5. Failing tests
 Write unit tests that exercise the expected outcome per feature, in the most isolated way. Prefer real objects over mocks (user preference); mock only when necessary. Run the tests — they must fail (code does not exist). Write `pipeline/05-tests.md` summarizing test files and what each asserts.
