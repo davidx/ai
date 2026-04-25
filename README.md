@@ -5,13 +5,13 @@ Collection of AI resources. Today: a Claude Code marketplace.
 ## Install the marketplace
 
 ```
-/plugin marketplace add davidx/ai
+claude plugin marketplace add davidx/ai
 ```
 
 ## Install the plugin
 
 ```
-/plugin install pipeline@davidx-claude
+claude plugin install pipeline@davidx-claude
 ```
 
 ## The starway skill
