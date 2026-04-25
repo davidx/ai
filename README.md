@@ -26,13 +26,14 @@ Claude walks the pipeline top-to-bottom, writing one file per step into `pipelin
   1. requirements      ── pipeline/01-requirements.md
   2. features          ── pipeline/02-features.md  +  features/*.yaml
   3. pseudocode        ── pipeline/03-pseudocode.md
-  4. file plan         ── pipeline/04-file-plan.md
-  5. failing tests     ── pipeline/05-tests.md
-  6. minimal code      ── pipeline/06-implementation.md
-  7. coverage (100%)   ── pipeline/07-coverage.md
-  8. refactor          ── pipeline/08-refactor.md
-  9. real providers    ── pipeline/09-providers.md
- 10. runnable script   ── pipeline/10-script.md
+  4. pseudotests       ── pipeline/04-pseudotests.md
+  5. file plan         ── pipeline/05-file-plan.md
+  6. failing tests     ── pipeline/06-tests.md
+  7. minimal code      ── pipeline/07-implementation.md
+  8. coverage (100%)   ── pipeline/08-coverage.md
+  9. refactor          ── pipeline/09-refactor.md
+ 10. real providers    ── pipeline/10-providers.md
+ 11. runnable script   ── pipeline/11-script.md
 ```
 
 Every project also gets a `Makefile` with `test`, `coverage`, `start`, `stop` (if relevant), and `check`.
